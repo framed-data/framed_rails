@@ -1,0 +1,11 @@
+Gemfile.lock
+.DS\_Store
+.svn/
+*~
+*.rbc
+pkg/
+*.gem
+!rails
+Manifest*
+gems/framed_rails.gemspec
+gems/framed_rails*.tar.gz
