@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module FramedRails
+module Framed
   module VERSION
     def self.build_version_string(*parts)
       parts.compact.join('.')

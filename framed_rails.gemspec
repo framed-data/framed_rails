@@ -2,11 +2,11 @@
 
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'framed_rails/version'
+require 'framed/version'
 
 Gem::Specification.new do |s|
   s.name = "framed_rails"
-  s.version = FramedRails::VERSION::STRING
+  s.version = Framed::VERSION::STRING
   s.required_ruby_version = '>= 1.8.7'
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = [ "Jeremy Dunck" ]
