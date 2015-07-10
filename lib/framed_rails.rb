@@ -8,6 +8,8 @@ require 'framed/client'
 require 'framed/emitters'
 
 module Framed
+  SEGMENT_API = 'https://api.segment.io/v1/track'
+
   class << self
     attr_accessor :client, :consumer
 
@@ -15,13 +17,13 @@ module Framed
       @configuration ||= {
         :consumer => Framed::Threaded,
         :user_controller_method => 'current_user',
-        :endpoint => 'https://api.segment.io/v1/track',
+        :endpoint => Framed::SEGMENT_API,
         :logger => Logger.new(STDERR)
       }
     end
 
     def configure(silent = false)
-      yield(configuration)
+      yield configuration
       self.client = Client.new(configuration)
 
       @consumer.stop if @consumer
