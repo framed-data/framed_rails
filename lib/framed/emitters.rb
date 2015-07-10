@@ -19,11 +19,14 @@ module Framed
   class Threaded < Base
     def initialize(client)
       super
+      @queue_lock = Mutex.new
       @queue = []
     end
 
     def enqueue(event)
-      @queue << event
+      @queue_lock.synchronize {
+        @queue << event
+      }
       start
     end
 
@@ -49,7 +52,7 @@ module Framed
       end
       @thread = nil
 
-      if drain && @queue.count
+      if drain && queue_count
         process_events
       end      
     end
@@ -57,11 +60,19 @@ module Framed
     private
 
     def dequeue
-      @queue.pop
+      @queue_lock.synchronize {
+        @queue.pop
+      }
+    end
+
+    def queue_count
+      @queue_lock.synchronize {
+        @queue.count
+      }
     end
 
     def process_events
-      while @queue.count > 0
+      while queue_count > 0
         event = dequeue
   
         begin
