@@ -27,7 +27,7 @@ EOS
   s.files = file_list
 
   s.homepage = "http://www.github.com/framed-data/framed_rails"
-  s.require_paths = ["lib"]
+  s.require_paths = ["lib", 'vendor/gems/excon-0.45.3/lib']
   s.rubygems_version = Gem::VERSION
   s.summary = "Framed.io data collector"
 

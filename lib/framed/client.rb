@@ -1,5 +1,4 @@
-excon_path = ::File.expand_path('../../../vendor/gems/excon-0.45.3/lib/', __FILE__)
-require File.join(excon_path, 'excon')
+require 'excon'
 require 'base64'
 require 'json'
 
