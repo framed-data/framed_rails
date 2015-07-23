@@ -3,9 +3,11 @@ require 'logger'
 require 'time'
 
 require 'framed/version'
+require 'framed/rails' if defined?(::Rails)
 require 'framed/railtie' if defined?(::Rails::Railtie)
 require 'framed/client'
 require 'framed/emitters'
+require 'framed/utils'
 
 module Framed
   SEGMENT_API = 'https://api.segment.io/v1/track'
@@ -15,10 +17,11 @@ module Framed
 
     def configuration
       @configuration ||= {
-        :consumer => Framed::Threaded,
-        :user_controller_method => 'current_user',
+        :consumer => Framed::Emitters::Threaded,
+        :user_id_controller_method => 'framed_devise_user_id',
         :endpoint => Framed::SEGMENT_API,
-        :logger => Logger.new(STDERR)
+        :logger => Logger.new(STDERR),
+        :anonymous_cookie => 'framed_id'
       }
     end
 
@@ -39,6 +42,7 @@ module Framed
         }
       })
 
+      event[:channel] = 'server'
       # fill in if needed, in case it sits in queue for a while.
       event[:timestamp] ||= Time.now.utc.iso8601
 
@@ -46,11 +50,23 @@ module Framed
     end
 
     def logger
-      @config[:logger]
+      configuration[:logger]
     end
 
     def drain
       @consumer.stop(true)
+    end
+
+    def user_id_controller_method
+      configuration[:user_id_controller_method]
+    end
+
+    def anonymous_cookie
+      configuration[:anonymous_cookie]
+    end
+
+    def new_anonymous_id
+      Framed.uuid
     end
   end
 end

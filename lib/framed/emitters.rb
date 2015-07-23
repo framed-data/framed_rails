@@ -1,96 +1,93 @@
+require 'thread'
+
 module Framed
-  class Base
-    def initialize(client)
-      @client = client
-    end
-
-    def stop(drain = false)
-
-    end
-    def start
-
-    end
-
-    def enqueue
-      raise NotImplementedError
-    end
-  end
-
-  class Threaded < Base
-    def initialize(client)
-      super
-      @queue_lock = Mutex.new
-      @queue = []
-    end
-
-    def enqueue(event)
-      @queue_lock.synchronize {
-        @queue << event
-      }
-      start
-    end
-
-    def start
-      return if @thread
-
-      @thread = Thread.new do
-        while true
-          begin
-            process_events
-          rescue StandardError => exc
-            logger.error("framed_rails: run_thread failed: #{exc}")
-            stop
-          end
-          sleep(0.5)
-        end
-      end  
-    end
-
-    def stop(drain = false)
-      if @thread
-        @thread.kill
+  module Emitters
+    class Base
+      def initialize(client)
+        @client = client
       end
-      @thread = nil
 
-      if drain && queue_count
-        process_events
-      end      
-    end
+      def stop(drain = false)
 
-    private
+      end
+      def start
 
-    def dequeue
-      @queue_lock.synchronize {
-        @queue.pop
-      }
-    end
+      end
 
-    def queue_count
-      @queue_lock.synchronize {
-        @queue.count
-      }
-    end
+      def enqueue
+        raise NotImplementedError
+      end
 
-    def process_events
-      while queue_count > 0
-        event = dequeue
-  
+      private
+
+      def transmit(event)
         begin
           @client.track(event)
-        rescue Framed::Error => exc
-          logger.warn("WTFBBQ #{exc}")
+        rescue StandardError => exc
+          Framed.logger.error("framed_rails: transmit failed: #{exc}")
         end
       end
     end
-  end
 
-  class Blocking < Base
-    def start
+    class Threaded < Base
+      def initialize(client)
+        super
+        @queue = Queue.new
+      end
+
+      def enqueue(event)
+        @queue << event
+        start
+      end
+
+      def start
+        return if @thread
+
+        @thread = Thread.new do
+          while true
+            begin
+              process_events
+            rescue StandardError => exc
+              Framed.logger.error("framed_rails: run_thread failed: #{exc}")
+              stop
+            end
+            sleep(0.5)
+          end
+        end
+      end
+
+      def stop(drain = false)
+        if @thread
+          @thread.kill
+        end
+        @thread = nil
+
+        if drain && @queue.length
+          process_events
+        end
+      end
+
+      private
+
+      def dequeue
+        @queue.pop
+      end
+
+      def process_events
+        while @queue.length > 0
+          transmit(dequeue)
+        end
+      end
     end
-    def stop
-    end
-    def enqueue(event)
-      @client.track(event)
+
+    class Blocking < Base
+      def start
+      end
+      def stop
+      end
+      def enqueue(event)
+        transmit(event)
+      end
     end
   end
 end
