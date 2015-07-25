@@ -11,17 +11,18 @@ require 'framed/utils'
 
 module Framed
   SEGMENT_API = 'https://api.segment.io/v1/track'
+  COOKIE_NAME = 'framed_id'
 
   class << self
     attr_accessor :client, :consumer
 
     def configuration
       @configuration ||= {
-        :consumer => Framed::Emitters::Threaded,
+        :consumer => Framed::Emitters::Blocking,
         :user_id_controller_method => 'framed_devise_user_id',
         :endpoint => Framed::SEGMENT_API,
         :logger => Logger.new(STDERR),
-        :anonymous_cookie => 'framed_id'
+        :anonymous_cookie => Framed::COOKIE_NAME
       }
     end
 

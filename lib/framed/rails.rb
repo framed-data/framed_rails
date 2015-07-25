@@ -16,8 +16,8 @@ class ApplicationController < ActionController::Base
         :anonymousId => anonymous_id,
         :userId => user_id,
         :event   => "page_view",
-        :controller_name => controller_name,
-        :action_name => action_name,
+        :controller_params => params,
+        :request_method => request.method,
         :path => request.path
       })
     rescue StandardError => exc
