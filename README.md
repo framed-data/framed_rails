@@ -32,7 +32,7 @@ Configuration
 -------------
 
 <table>
-	<th><td>Key</td><td>Description</td><td><td>Default</td></th>
+	<tr><th>Key</th><th>Description</th><th>Default</th></tr>
 
 	<tr><td>:consumer</td><td>The emitter to be used for reporting.  See the Emitters section below.</td><td>Framed::Emitters::Blocking</td></tr>
 
