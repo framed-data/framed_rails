@@ -67,7 +67,7 @@ module Framed
     end
 
     def new_anonymous_id
-      Framed.uuid
+      Framed::Utils.uuid
     end
   end
 end
