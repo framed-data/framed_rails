@@ -1,6 +1,5 @@
 # encoding: utf-8
 require 'logger'
-require 'time'
 
 require 'framed/version'
 require 'framed/rails' if defined?(::Rails)
@@ -45,7 +44,7 @@ module Framed
 
       event[:channel] = 'server'
       # fill in if needed, in case it sits in queue for a while.
-      event[:timestamp] ||= Time.now.utc.iso8601
+      event[:timestamp] ||= Framed::Utils.serialize_date(Time.now)
 
       @consumer.enqueue(event)
     end
