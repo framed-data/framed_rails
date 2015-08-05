@@ -4,4 +4,7 @@ module Framed
 
   class RequiredConfiguration < Error
   end
+
+  class Timeout < Error
+  end
 end

@@ -2,6 +2,10 @@ class ApplicationController < ActionController::Base
 
   after_filter :framed_report_page_view
 
+  def pv_event_name
+    "#{request.method}_#{params[:controller]}\##{params[:action]}"
+  end
+
   def framed_report_page_view
     begin
       anonymous_id = cookies.signed[Framed.anonymous_cookie]
@@ -13,15 +17,17 @@ class ApplicationController < ActionController::Base
       end
 
       Framed.report({
-        :anonymousId => anonymous_id,
-        :userId => user_id,
-        :event   => "page_view",
-        :controller_params => params,
-        :request_method => request.method,
-        :path => request.path
+        :anonymous_id => anonymous_id,
+        :user_id => user_id,
+        :event   => pv_event_name,
+        :properties => Framed::Utils.flattened_hash({
+          :params => params,
+          :request_method => request.method,
+          :path => request.path
+        })
       })
     rescue StandardError => exc
-      Framed.logger("Failed to report page_view #{exc}")
+      Framed.logger.error("Failed to report page_view #{exc}")
     end
   end
 

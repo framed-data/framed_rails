@@ -34,15 +34,13 @@ module Framed
     end
 
     def report(event)
-      event[:context] ||= {}
-      event[:context].merge!({
-        :library => {
-          :name => "framed_rails",
-          :version => Framed::VERSION
-        }
+      event[:framed_lib] =  "ruby"
+      event[:framed_lib_version] = Framed::VERSION
+      event[:properties] ||= {}
+      event[:properties].merge!({
+        :channel => 'server',
       })
 
-      event[:channel] = 'server'
       # fill in if needed, in case it sits in queue for a while.
       event[:timestamp] ||= Framed::Utils.serialize_date(Time.now)
 
