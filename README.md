@@ -57,3 +57,10 @@ By default, the report is sent with a blocking Emitter.  If you would prefer a n
 ```
 
 If you'd like to implement your own, see lib/framed/emitters.rb, particularly Base and Blocking as examples.
+
+Emitters included in this gem:
+
+ * Framed::Emitters::InMemory - stores reported events in memory, rather than transmitting them.   Events are later available as Framed.consumer.reported.
+ * Framed::Emitters::Logger - Logs an info message to config[:logger].
+ * Framed::Emitters::Blocking - Logs to Framed, using a blocking request.
+ * Framed::Emitters::Threaded - Logs to Framed, using a background-threaded request.

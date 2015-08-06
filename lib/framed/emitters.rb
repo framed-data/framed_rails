@@ -1,4 +1,5 @@
 require 'thread'
+require 'json'
 
 module Framed
   module Emitters
@@ -14,7 +15,7 @@ module Framed
 
       end
 
-      def enqueue
+      def enqueue(event)
         raise NotImplementedError
       end
 
@@ -26,6 +27,25 @@ module Framed
         rescue StandardError => exc
           Framed.logger.error("framed_rails: transmit failed: #{exc}")
         end
+      end
+    end
+
+    class InMemory < Base
+      attr_reader :reported
+
+      def initialize(client)
+        super
+        @reported = []
+      end
+
+      def enqueue(event)
+        @reported << event
+      end
+    end
+
+    class Logger < Base
+      def enqueue(event)
+        Framed.logger.info(JSON.generate(event))
       end
     end
 
