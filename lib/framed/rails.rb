@@ -16,14 +16,19 @@ class ApplicationController < ActionController::Base
         cookies.signed.permanent[Framed.anonymous_cookie] = { :value => anonymous_id, :httponly => true}
       end
 
+      cleaned_params = params.except(:controller, :action).to_h
       Framed.report({
         :anonymous_id => anonymous_id,
         :user_id => user_id,
         :event   => pv_event_name,
-        :properties => Framed::Utils.flattened_hash({
-          :params => params,
+        :context => {
+          :path => request.path,
           :request_method => request.method,
-          :path => request.path
+          :rails_controller => params[:controller],
+          :rails_action => params[:action]
+        },
+        :properties => Framed::Utils.flattened_hash({
+          :params => cleaned_params
         })
       })
     rescue StandardError => exc
@@ -32,6 +37,6 @@ class ApplicationController < ActionController::Base
   end
 
   def framed_devise_user_id
-    current_user.try(:email)
+    current_user.try(:id)
   end
 end
