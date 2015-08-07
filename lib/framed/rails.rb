@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
 
       cleaned_params = params.except(:controller, :action).to_h
       Framed.report({
+        :type => :track,
         :anonymous_id => anonymous_id,
         :user_id => user_id,
         :event   => pv_event_name,
