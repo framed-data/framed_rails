@@ -9,7 +9,8 @@ require 'framed/emitters'
 require 'framed/utils'
 
 module Framed
-  SEGMENT_API = 'https://api.segment.io/v1/track'
+  SEGMENT_API_ENDPOINT = 'https://api.segment.io/v1/track'
+  FRAMED_API_ENDPOINT = 'https://intake.framed.io/events'
   COOKIE_NAME = 'framed_id'
 
   class << self
@@ -19,7 +20,7 @@ module Framed
       @configuration ||= {
         :consumer => Framed::Emitters::Blocking,
         :user_id_controller_method => 'framed_devise_user_id',
-        :endpoint => Framed::SEGMENT_API,
+        :endpoint => Framed::FRAMED_API_ENDPOINT,
         :logger => Logger.new(STDERR),
         :anonymous_cookie => Framed::COOKIE_NAME
       }

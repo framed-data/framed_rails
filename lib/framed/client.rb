@@ -17,13 +17,18 @@ module Framed
 
     def track(data)
       write_key = Base64.strict_encode64(@config[:write_key])
-      Excon.post(@config[:endpoint],
+      payload = JSON.generate(data)
+      response = Excon.post(@config[:endpoint],
         :headers => {
           'Authorization' => "Basic #{write_key}",
           'Content-Type' => 'application/json'
         },
-        :body => JSON.generate(data)
+        :body => payload
       )
+
+      if response.status != 200
+        raise Framed::RequestError.new("Failed Client.track #{response.status} with data #{payload}")
+      end
     end
   end
 end

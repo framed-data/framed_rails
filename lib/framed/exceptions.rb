@@ -7,4 +7,7 @@ module Framed
 
   class Timeout < Error
   end
+
+  class RequestError < Error
+  end
 end
