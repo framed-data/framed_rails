@@ -35,8 +35,8 @@ module Framed
     end
 
     def report(event)
-      event[:framed_lib] =  "ruby"
-      event[:framed_lib_version] = Framed::VERSION
+      event[:lib] =  "framed_ruby"
+      event[:lib_version] = Framed::VERSION
       event[:context] ||= {}
       event[:context].merge!({
         :channel => 'server',
