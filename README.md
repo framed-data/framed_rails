@@ -3,8 +3,6 @@ framed_rails
 
 `framed_rails` is a gem to add Framed instrumentation to your rails4 app.  For each pageview, it sends an event to Framed.
 
-FIXME: By default it actually current sends to Segment; we still need a Framed endpoint and secret key.
-
 To use this with rails:
 
 
@@ -15,7 +13,7 @@ To use this with rails:
 require 'framed_rails'
 
 Framed.configure do |config|
-  config[:write_key] = 'your write key'
+  config[:write_key] = 'Framed key'
 end
 ```
 
