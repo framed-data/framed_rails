@@ -1,4 +1,4 @@
-class ApplicationController < ActionController::Base
+ActionController::Base.class_eval do
 
   after_filter :framed_report_page_view
 
