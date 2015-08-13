@@ -16,11 +16,11 @@ module Framed
     end
 
     def track(data)
-      write_key = Base64.strict_encode64(@config[:write_key])
+      creds = Base64.strict_encode64(@config[:api_key] + ':')
       payload = JSON.generate(data)
       response = Excon.post(@config[:endpoint],
         :headers => {
-          'Authorization' => "Basic #{write_key}",
+          'Authorization' => "Basic #{creds}",
           'Content-Type' => 'application/json'
         },
         :body => payload
