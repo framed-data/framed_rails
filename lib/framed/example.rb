@@ -1,7 +1,7 @@
 require 'framed_rails'
 
 Framed.configure do |config|
-  config[:write_key] = 'XWkzILLq5gLUKXQUhAl4DJej1wkxqiBy'
+  config[:api_key] = 'XWkzILLq5gLUKXQUhAl4DJej1wkxqiBy'
 #  config[:consumer] = Framed::Blocking
 end
 

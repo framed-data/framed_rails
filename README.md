@@ -14,7 +14,7 @@ To use this with rails:
 require 'framed_rails'
 
 Framed.configure do |config|
-  config[:write_key] = 'Framed key'
+  config[:api_key] = 'YOUR_FRAMED_API_KEY'
 end
 ```
 

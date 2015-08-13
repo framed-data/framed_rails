@@ -10,7 +10,7 @@ module Framed
 
     def initialize(config)
       raise Error.new('No API endpoint specified') unless config[:endpoint]
-      raise Error.new('No write_key specified') unless config[:write_key]
+      raise Error.new('No api_key specified') unless config[:api_key]
 
       @config = config
     end
