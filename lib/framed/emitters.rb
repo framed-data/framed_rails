@@ -21,9 +21,9 @@ module Framed
 
       private
 
-      def transmit(event)
+      def transmit(events)
         begin
-          @client.track(event)
+          @client.track(events)
         rescue StandardError => exc
           Framed.logger.error("framed_rails: transmit failed: #{exc}")
         end
@@ -53,10 +53,13 @@ module Framed
       def initialize(client)
         super
         @queue = Queue.new
+        @batch_lock = Mutex.new
       end
 
       def enqueue(event)
-        @queue << event
+        @batch_lock.synchronize do
+          @queue << event
+        end
         start
       end
 
@@ -82,15 +85,29 @@ module Framed
         end
         @thread = nil
 
-        if drain && @queue.length
+        if drain && @queue.length > 0
           process_events
         end
       end
 
       private
 
-      def dequeue
-        @queue.pop
+      def dequeue(limit=10)
+        # De-queue up to `limit` events, without blocking.
+        #  When limit is met, or when ThreadError occurs
+        #  due to trying to dequeue an empty Queue,
+        #  return the batch of events.
+        @batch_lock.synchronize do
+          pending = []
+          begin
+            while pending.size < limit
+              pending << @queue.pop(true)
+            end
+          rescue ThreadError => exc
+            # expected, just return pending
+          end
+          pending
+        end
       end
 
       def process_events
@@ -106,7 +123,7 @@ module Framed
       def stop
       end
       def enqueue(event)
-        transmit(event)
+        transmit([event])
       end
     end
   end
