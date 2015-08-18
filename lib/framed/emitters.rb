@@ -22,7 +22,7 @@ module Framed
       private
 
       def transmit(events)
-        return unless events && 0 < events.size
+        return unless events && events.length > 0
 
         begin
           @client.track(events)
