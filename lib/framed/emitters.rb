@@ -22,6 +22,8 @@ module Framed
       private
 
       def transmit(events)
+        return unless events && 0 < events.size
+
         begin
           @client.track(events)
         rescue StandardError => exc
