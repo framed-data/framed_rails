@@ -105,3 +105,5 @@ Emitters included in this gem:
  * `Framed::Emitters::Logger` - Logs an info message to config[:logger].
  * `Framed::Emitters::Blocking` - Logs to Framed, using a blocking request.
  * `Framed::Emitters::Threaded` - Logs to Framed, using a background-threaded request.
+ * `Framed::Emitters::BufferedRequest` - Logs to Framed 1) if no request is in progress, immediately 2) otherwise in batches of up to 100 as soon as the previous request completes.
+ 
