@@ -37,14 +37,16 @@ module Framed
     def report(event)
       event[:lib] =  "framed_ruby"
       event[:lib_version] = Framed::VERSION
+      event[:type] ||= :track
       event[:context] ||= {}
       event[:context].merge!({
         :channel => 'server',
       })
 
+      event[:properties] ||= {}
+
       # fill in if needed, in case it sits in queue for a while.
       event[:timestamp] ||= Framed::Utils.serialize_date(Time.now)
-
       @consumer.enqueue(event)
     end
 
@@ -52,8 +54,8 @@ module Framed
       configuration[:logger]
     end
 
-    def drain
-      @consumer.stop(true)
+    def drain    
+      @consumer.stop(true) if @consumer
     end
 
     def user_id_controller_method
