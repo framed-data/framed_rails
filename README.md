@@ -80,6 +80,13 @@ Configuration
     User ID.  Devise just works.</td>
     <td>'framed_devise_user_id'</td>
   </tr>
+
+  <tr>
+    <td>:include_ajax</td>
+    <td>Whether to include requests sent via AJAX.  (Turbolinks are always included.)</td>
+    <td>false</td>
+  </tr>
+
 </table>
 
 Emitters
