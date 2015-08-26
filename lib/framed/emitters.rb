@@ -122,7 +122,7 @@ module Framed
     class Blocking < Base
       def start
       end
-      def stop
+      def stop(drain = false)
       end
       def enqueue(event)
         transmit([event])
@@ -230,14 +230,13 @@ module Framed
         ensure_request_thread
 
         @batch_lock.synchronize do
+          return if @event_queue.empty?
+
           pending = []
           while pending.length < MAX_REQUEST_BATCH_SIZE && @event_queue.length > 0
              pending << @event_queue.pop
           end
 
-          if pending.length == 0
-            return
-          end
           @request_queue << pending
         end
       end
