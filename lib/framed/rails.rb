@@ -1,8 +1,8 @@
 ActionController::Base.class_eval do
 
-  after_filter :framed_report_page_view
+  after_filter :framed_report_request
 
-  def framed_pv_event_name
+  def framed_event_name
     "#{request.method}_#{params[:controller]}\##{params[:action]}"
   end
 
@@ -14,7 +14,7 @@ ActionController::Base.class_eval do
     !request.xhr?
   end
 
-  def framed_report_page_view
+  def framed_report_request
     begin
       anonymous_id = cookies.signed[Framed.anonymous_cookie]
       user_id = send(Framed.user_id_controller_method)
@@ -31,7 +31,7 @@ ActionController::Base.class_eval do
         :type => :track,
         :anonymous_id => anonymous_id,
         :user_id => user_id,
-        :event   => framed_pv_event_name,
+        :event   => framed_event_name,
         :context => {
           :path => request.path,
           :request_method => request.method,
@@ -45,7 +45,7 @@ ActionController::Base.class_eval do
 
       Framed.report(event)
     rescue StandardError => exc
-      Framed.logger.error("Failed to report page_view #{exc}")
+      Framed.logger.error("Failed to report request #{exc}")
     end
   end
 
