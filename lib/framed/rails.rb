@@ -21,7 +21,7 @@ ActionController::Base.class_eval do
 
       if user_id.nil? && anonymous_id.nil?
         anonymous_id = Framed.new_anonymous_id
-        cookies.signed.permanent[Framed.anonymous_cookie] = { :value => anonymous_id, :httponly => true}
+        cookies.signed.permanent[Framed.anonymous_cookie] = {:value => anonymous_id, :httponly => true}
       end
 
       return unless framed_included?(request)
@@ -44,12 +44,16 @@ ActionController::Base.class_eval do
       }
 
       Framed.report(event)
-    rescue StandardError => exc
+    rescue Exception => exc
       Framed.logger.error("Failed to report request #{exc}")
     end
   end
 
-  def framed_devise_user_id
-    current_user.try(:id)
+  def framed_current_user_id
+    begin
+      current_user.try(:id)
+    rescue
+      nil
+    end
   end
 end

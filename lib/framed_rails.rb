@@ -19,7 +19,7 @@ module Framed
     def configuration
       @configuration ||= {
         :consumer => Framed::Emitters::Blocking,
-        :user_id_controller_method => 'framed_devise_user_id',
+        :user_id_controller_method => 'framed_current_user_id',
         :endpoint => Framed::FRAMED_API_ENDPOINT,
         :logger => Logger.new(STDERR),
         :anonymous_cookie => Framed::COOKIE_NAME,
@@ -55,7 +55,7 @@ module Framed
       configuration[:logger]
     end
 
-    def drain    
+    def drain
       @consumer.stop(true) if @consumer
     end
 
