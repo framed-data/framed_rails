@@ -30,7 +30,7 @@ module Framed
       yield configuration
       self.client = Client.new(configuration)
 
-      @consumer.stop if @consumer
+      @consumer.stop(true) if @consumer
       @consumer = configuration[:consumer].new(self.client)
     end
 

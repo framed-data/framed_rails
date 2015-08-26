@@ -26,7 +26,7 @@ module Framed
 
         begin
           @client.track(events)
-        rescue StandardError => exc
+        rescue Exception => exc
           Framed.logger.error("framed_rails: transmit failed: #{exc}")
         end
       end
@@ -72,7 +72,7 @@ module Framed
           while true
             begin
               process_events
-            rescue StandardError => exc
+            rescue Exception => exc
               Framed.logger.error("framed_rails: run_thread failed: #{exc}")
               stop
             end
@@ -129,7 +129,7 @@ module Framed
       end
     end
 
-    class BufferedRequest < Base
+    class Buffered < Base
       MAX_REQUEST_BATCH_SIZE = 100
       MAX_QUEUE_SIZE = 10_000
 
@@ -142,6 +142,24 @@ module Framed
         @request_pending = Mutex.new
 
         @request_thread = nil
+      end
+
+      def start
+        if @request_thread and !@request_thread.alive?
+          Framed.logger.error("Starting request thread due to dead thread")
+        end
+
+        @request_thread = Thread.new do
+          while true
+            pending = @request_queue.pop
+
+            @request_pending.synchronize do
+              transmit(pending)
+            end
+
+            start_request
+          end
+        end
       end
 
       def stop(drain = false)
@@ -165,32 +183,12 @@ module Framed
         end
       end
 
-      def start
-        if @request_thread and !@request_thread.alive?
-          Framed.logger.error("Starting request thread due to dead thread")
-        end
-
-        @request_thread = Thread.new do
-          while true
-            pending = @request_queue.pop
-
-            @request_pending.lock
-            begin
-              transmit(pending)
-            ensure
-              @request_pending.unlock
-            end
-
-            start_request
-          end
-        end
-      end
-
       def warn_full(event)
         Framed.logger.error("Queued #{event} to framed, but queue is full.  Dropping event.")
       end
 
       def enqueue(event)
+        queue_full = false
         @batch_lock.synchronize do
           # To avoid logging inside the lock (since loggers can block)
           #  we remember if the queue is full and log outside the lock.
@@ -249,7 +247,7 @@ module Framed
 
         begin
           @client.track(events)
-        rescue StandardError => exc
+        rescue Exception => exc
           Framed.logger.error("framed_rails: transmit failed: #{exc}")
         end
       end
