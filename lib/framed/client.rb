@@ -16,6 +16,8 @@ module Framed
     end
 
     def track(data)
+      Framed.logger.info("Client#track #{data.length}")
+
       creds = Base64.strict_encode64(@config[:api_key] + ':')
       payload = JSON.generate(data)
       response = Excon.post(@config[:endpoint],

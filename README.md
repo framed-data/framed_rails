@@ -18,7 +18,7 @@ Framed.configure do |config|
 end
 ```
 
-Note that the threaded emitter works on a background thread.  It is
+Note that the Buffered emitter works on a background thread.  It is
 possible that events will be unreported when your containing process
 ends, unless you drain at process shutdown, i.e.
 
@@ -91,7 +91,7 @@ your configure block:
 
 
 ```ruby
-  config[:consumer] => Framed::Emitters::Threaded
+  config[:consumer] => Framed::Emitters::Buffered
 ```
 
 If you'd like to implement your own, see `lib/framed/emitters.rb`,
@@ -104,4 +104,5 @@ Emitters included in this gem:
    Framed.consumer.reported.
  * `Framed::Emitters::Logger` - Logs an info message to config[:logger].
  * `Framed::Emitters::Blocking` - Logs to Framed, using a blocking request.
- * `Framed::Emitters::Threaded` - Logs to Framed, using a background-threaded request.
+ * `Framed::Emitters::Buffered` - Logs to Framed 1) if no request is in progress, immediately 2) otherwise in batches of up to 100 as soon as the previous request completes.  All requests are sent on a background thread.
+ 
