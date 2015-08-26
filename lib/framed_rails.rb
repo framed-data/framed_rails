@@ -22,7 +22,8 @@ module Framed
         :user_id_controller_method => 'framed_devise_user_id',
         :endpoint => Framed::FRAMED_API_ENDPOINT,
         :logger => Logger.new(STDERR),
-        :anonymous_cookie => Framed::COOKIE_NAME
+        :anonymous_cookie => Framed::COOKIE_NAME,
+        :include_xhr => false
       }
     end
 
