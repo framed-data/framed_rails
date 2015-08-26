@@ -82,7 +82,7 @@ Configuration
   </tr>
 
   <tr>
-    <td>:include_ajax</td>
+    <td>:include_xhr</td>
     <td>Whether to include requests sent via AJAX.  (Turbolinks are always included.)</td>
     <td>false</td>
   </tr>

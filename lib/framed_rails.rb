@@ -23,7 +23,7 @@ module Framed
         :endpoint => Framed::FRAMED_API_ENDPOINT,
         :logger => Logger.new(STDERR),
         :anonymous_cookie => Framed::COOKIE_NAME,
-        :include_ajax => false
+        :include_xhr => false
       }
     end
 

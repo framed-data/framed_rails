@@ -6,8 +6,8 @@ ActionController::Base.class_eval do
     "#{request.method}_#{params[:controller]}\##{params[:action]}"
   end
 
-  def framed_filter(event)
-    return true if Framed.configuration[:include_ajax]
+  def framed_included?(request)
+    return true if Framed.configuration[:include_xhr]
     # include Turbolinks requests (which are a special kind of XHR)
     return true if request.headers.include?('X-XHR-Referer')
 
@@ -23,6 +23,8 @@ ActionController::Base.class_eval do
         anonymous_id = Framed.new_anonymous_id
         cookies.signed.permanent[Framed.anonymous_cookie] = { :value => anonymous_id, :httponly => true}
       end
+
+      return unless framed_included?(request)
 
       cleaned_params = params.except(:controller, :action).to_h
       event = {
@@ -40,8 +42,6 @@ ActionController::Base.class_eval do
           :params => cleaned_params
         })
       }
-
-      return unless framed_filter(event)
 
       Framed.report(event)
     rescue StandardError => exc
