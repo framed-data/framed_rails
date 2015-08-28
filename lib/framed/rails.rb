@@ -46,7 +46,7 @@ ActionController::Base.class_eval do
 
       Framed.report(event)
     rescue Exception => exc
-      Framed.logger.error("Failed to report request #{exc}")
+      Framed.log_error("Failed to report request #{exc}")
     end
   end
 

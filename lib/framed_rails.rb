@@ -12,6 +12,7 @@ module Framed
   SEGMENT_API_ENDPOINT = 'https://api.segment.io/v1/track'
   FRAMED_API_ENDPOINT = 'https://intake.framed.io/events'
   COOKIE_NAME = 'framed_id'
+  LOG_PREFIX = '[framed_rails] '
 
   class << self
     attr_accessor :client, :consumer
@@ -53,6 +54,14 @@ module Framed
 
     def logger
       configuration[:logger]
+    end
+
+    def log_info(msg)
+      logger.info(LOG_PREFIX + msg)
+    end
+
+    def log_error(msg)
+      logger.error(LOG_PREFIX + msg)
     end
 
     def drain

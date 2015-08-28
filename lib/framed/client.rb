@@ -16,7 +16,7 @@ module Framed
     end
 
     def track(data)
-      Framed.logger.info("Client#track #{data.length}")
+      Framed.log_info("Client#track #{data.length} events")
 
       creds = Base64.strict_encode64(@config[:api_key] + ':')
       payload = JSON.generate(data)
