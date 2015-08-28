@@ -27,7 +27,7 @@ module Framed
         begin
           @client.track(events)
         rescue Exception => exc
-          Framed.logger.error("framed_rails: transmit failed: #{exc}")
+          Framed.log_error("#transmit failed: #{exc}")
         end
       end
     end
@@ -47,7 +47,7 @@ module Framed
 
     class Logger < Base
       def enqueue(event)
-        Framed.logger.info(JSON.generate(event))
+        Framed.log_info(JSON.generate(event))
       end
     end
 
@@ -78,7 +78,7 @@ module Framed
 
       def start
         if @request_thread and !@request_thread.alive?
-          Framed.logger.error("Starting request thread due to dead thread")
+          Framed.log_info("Starting request thread due to dead thread")
         end
 
         @request_thread = Thread.new do
@@ -116,7 +116,7 @@ module Framed
       end
 
       def warn_full(event)
-        Framed.logger.error("Queued #{event} to framed, but queue is full.  Dropping event.")
+        Framed.log_error("Queued #{event} to Framed, but queue is full. Dropping event.")
       end
 
       def enqueue(event)
@@ -179,7 +179,7 @@ module Framed
         begin
           @client.track(events)
         rescue Exception => exc
-          Framed.logger.error("framed_rails: transmit failed: #{exc}")
+          Framed.log_error("#transmit failed: #{exc}")
         end
       end
     end
