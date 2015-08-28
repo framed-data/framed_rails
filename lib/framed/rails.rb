@@ -15,16 +15,17 @@ ActionController::Base.class_eval do
   end
 
   def framed_report_request
+    return unless framed_included?(request)
+
     begin
       anonymous_id = cookies.signed[Framed.anonymous_cookie]
       user_id = send(Framed.user_id_controller_method)
 
-      if user_id.nil? && anonymous_id.nil?
+      if anonymous_id.nil?
         anonymous_id = Framed.new_anonymous_id
-        cookies.signed.permanent[Framed.anonymous_cookie] = {:value => anonymous_id, :httponly => true}
+        cookie = {:value => anonymous_id, :httponly => true}
+        cookies.signed.permanent[Framed.anonymous_cookie] = cookie
       end
-
-      return unless framed_included?(request)
 
       cleaned_params = params.except(:controller, :action).to_h
       event = {
