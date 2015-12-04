@@ -6,7 +6,7 @@ app. For each request, it sends an event to Framed.
 
 To use this in your Rails project:
 
- * Add `gem 'framed_rails', '~> 0.1.4'` to your Gemfile.
+ * Add `gem 'framed_rails', '~> 0.1.7'` to your Gemfile.
  * Add the following to `config/initializers/framed_rails.rb`:
 
 ```ruby
