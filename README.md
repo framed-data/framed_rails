@@ -69,6 +69,15 @@ Configuration
     <td>false</td>
   </tr>
 
+  <tr>
+    <td>:excluded_params</td>
+    <td>An array of request parameter keys to never send to Framed. <code>:controller</code>, <code>:action</code>,
+    <code>:utf8</code>, <code>:authenticity_token</code>, <code>:commit</code>, and <code>:password</code> are never
+    sent, and anything added here is in addition to default values.
+    </td>
+    <td>[]</td>
+  </tr>
+
 </table>
 
 Emitters

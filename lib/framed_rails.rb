@@ -14,6 +14,14 @@ module Framed
   COOKIE_NAME = 'framed_id'
   LOG_PREFIX = '[framed_rails] '
 
+  DEFAULT_EXCLUDED_PARAMS =
+    [:controller,
+     :action,
+     :utf8,
+     :authenticity_token,
+     :commit,
+     :password]
+
   class << self
     attr_accessor :client, :consumer
 
@@ -24,8 +32,13 @@ module Framed
         :endpoint => Framed::FRAMED_API_ENDPOINT,
         :logger => Logger.new(STDERR),
         :anonymous_cookie => Framed::COOKIE_NAME,
-        :include_xhr => false
+        :include_xhr => false,
+        :excluded_params => []
       }
+    end
+
+    def excluded_params
+      (configuration[:excluded_params] + DEFAULT_EXCLUDED_PARAMS).uniq
     end
 
     def configure(silent = false)
