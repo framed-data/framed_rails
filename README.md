@@ -2,7 +2,7 @@
 ------------
 
 `framed_rails` is a gem to add Framed instrumentation to your Rails 4
-app. For each request, it sends an event to Framed.
+app. For each request that occurs in your app, it sends an event to Framed for analysis.
 
 To use this in your Rails project:
 
@@ -17,7 +17,8 @@ Framed.configure do |config|
 end
 ```
 
-If reporting fails, the exception will be logged to `Rails.logger` by default.
+If request reporting fails, an exception will be logged to `Rails.logger` by default.
+The logger used can be customized in config.
 
 Configuration
 -------------
@@ -30,47 +31,40 @@ Configuration
   </tr>
 
   <tr>
-    <td>:consumer</td>
-    <td>The emitter to be used for reporting.  See the Emitters
+    <td><code>:emitter</code></td>
+    <td>The emitter to be used for reporting. See the Emitters
     section below.</td>
-    <td>`Framed::Emitters::Blocking`</td>
+    <td><code>Framed::Emitters::Blocking</code></td>
   </tr>
 
   <tr>
-    <td>:user_id_controller_method</td>
-    <td>The name of a controller method which returns the user ID, if
+    <td><code>:user_id_controller_method</code></td>
+    <td>The name of a controller method which returns id of the current user, if
     any</td>
-    <td>`framed_current_user_id`</td>
+    <td><code>'framed_current_user_id'</code> (tries <code>current_user.id</code>)</td>
   </tr>
 
 	<tr>
-    <td>:logger</td>
+    <td><code>:logger</code></td>
     <td>A Logger for reporting errors.</td>
-    <td>`Rails.logger`</td>
+    <td><code>Rails.logger</code></td>
   </tr>
 
 	<tr>
-    <td>:anonymous_cookie</td>
-    <td>The name of the in signed cookie for anonymous user IDs.
-    Long-lived anonymous user IDs are issued anonymous users.</td>
-    <td>`Framed::COOKIE_NAME`</td>
-  </tr>
-
-	<tr>
-    <td>:user_id_controller_method</td>
-    <td>The name of a controller method which can provide the current
-    User ID. (Also works with Devise).</td>
-    <td>'framed_current_user_id'</td>
+    <td><code>:anonymous_cookie</code></td>
+    <td>The name of the signed cookie for anonymous user IDs.
+    Long-lived anonymous user IDs are issued anonymous IDs by default.</td>
+    <td><code>Framed::COOKIE_NAME</code></td>
   </tr>
 
   <tr>
-    <td>:include_xhr</td>
+    <td><code>:include_xhr</code></td>
     <td>Whether to include requests sent via AJAX. (Turbolinks are always included.)</td>
     <td>false</td>
   </tr>
 
   <tr>
-    <td>:excluded_params</td>
+    <td><code>:excluded_params</code></td>
     <td>An array of request parameter keys to never send to Framed. <code>:controller</code>, <code>:action</code>,
     <code>:utf8</code>, <code>:authenticity_token</code>, <code>:commit</code>, and <code>:password</code> are never
     sent, and anything added here is in addition to default values.
@@ -79,6 +73,15 @@ Configuration
   </tr>
 
 </table>
+
+
+user_id_controller_method
+--------
+This function is used to get the ID of the current user (if any) for properly attributing
+events to the users who performed them. The default implementation effectively tries to read
+`current_user.id`, but will not fail if `current_user` is not defined. You can change this
+to a to a controller function of your choosing by specifying its name as a string (invoked via `send`).
+
 
 Emitters
 --------
@@ -89,7 +92,7 @@ your configure block:
 
 
 ```ruby
-config[:consumer] = Framed::Emitters::Buffered
+config[:emitter] = Framed::Emitters::Buffered
 ```
 
 Emitters included in this gem:
@@ -97,7 +100,7 @@ Emitters included in this gem:
  * `Framed::Emitters::Blocking` - Logs each request to Framed using a single blocking request (default)
  * `Framed::Emitters::Buffered` - Logs to Framed 1) if no request is in progress, immediately 2) otherwise in batches of up to 100 as soon as the previous request completes.  All requests are sent on a background thread.
  * `Framed::Emitters::InMemory` - stores reported events in memory,
-   rather than transmitting them.  Events are later available as `Framed.consumer.reported`.
+   rather than transmitting them.  Events are later available as `Framed.emitter.reported`.
  * `Framed::Emitters::Logger` - Logs an info message to `config[:logger]`.
 
 Both `InMemory` and `Logger` should be considered for debugging/diagnostic purposes only.
