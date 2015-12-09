@@ -8,14 +8,13 @@ module Framed
         @client = client
       end
 
-      def stop(drain = false)
-
+      def stop(_drain = false)
       end
+
       def start
-
       end
 
-      def enqueue(event)
+      def enqueue(_event)
         raise NotImplementedError
       end
 
@@ -26,7 +25,7 @@ module Framed
 
         begin
           @client.track(events)
-        rescue Exception => exc
+        rescue StandardError => exc
           Framed.log_error("#transmit failed: #{exc}")
         end
       end
@@ -54,8 +53,10 @@ module Framed
     class Blocking < Base
       def start
       end
-      def stop(drain = false)
+
+      def stop(_drain = false)
       end
+
       def enqueue(event)
         transmit([event])
       end
@@ -77,12 +78,12 @@ module Framed
       end
 
       def start
-        if @request_thread and !@request_thread.alive?
-          Framed.log_info("Starting request thread due to dead thread")
+        if @request_thread && !@request_thread.alive?
+          Framed.log_info('Starting request thread due to dead thread')
         end
 
         @request_thread = Thread.new do
-          while true
+          loop do
             pending = @request_queue.pop
 
             @request_pending.synchronize do
@@ -126,7 +127,7 @@ module Framed
           #  we remember if the queue is full and log outside the lock.
           queue_full = @event_queue.length >= MAX_QUEUE_SIZE
 
-          if !queue_full
+          unless queue_full
             @event_queue << event
           end
 
@@ -166,7 +167,7 @@ module Framed
 
           pending = []
           while pending.length < MAX_REQUEST_BATCH_SIZE && @event_queue.length > 0
-             pending << @event_queue.pop
+            pending << @event_queue.pop
           end
 
           @request_queue << pending
@@ -178,7 +179,7 @@ module Framed
 
         begin
           @client.track(events)
-        rescue Exception => exc
+        rescue StandardError => exc
           Framed.log_error("#transmit failed: #{exc}")
         end
       end

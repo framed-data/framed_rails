@@ -39,8 +39,8 @@ module Framed
       dt.utc.iso8601
     end
 
-    def flattened_hash(h, namespace = '', memo = {})
-      h.reduce(memo) { |memo, (key, value)|
+    def flattened_hash(h, namespace = '', init = {})
+      h.reduce(init) do |memo, (key, value)|
         value = value.to_h if value.respond_to?(:to_h)
         if value.instance_of?(Hash)
           memo.merge!(flattened_hash(value, "#{namespace}#{key}_", memo))
@@ -48,7 +48,7 @@ module Framed
           memo["#{namespace}#{key}"] = value
         end
         memo
-      }
+      end
     end
   end
 end

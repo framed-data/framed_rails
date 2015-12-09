@@ -24,7 +24,7 @@ ActionController::Base.class_eval do
       cookies.signed.permanent[Framed.anonymous_cookie] = cookie
     end
 
-    return anonymous_id
+    anonymous_id
   end
 
   def framed_current_user_id
@@ -60,7 +60,7 @@ ActionController::Base.class_eval do
       }
 
       Framed.report(event)
-    rescue Exception => exc
+    rescue StandardError => exc
       Framed.log_error("Failed to report request #{exc}")
     end
   end

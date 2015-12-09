@@ -23,11 +23,11 @@ module Framed
      :password]
 
   class << self
-    attr_accessor :client, :consumer
+    attr_accessor :client, :emitter
 
     def configuration
       @configuration ||= {
-        :consumer => Framed::Emitters::Blocking,
+        :emitter => Framed::Emitters::Blocking,
         :user_id_controller_method => 'framed_current_user_id',
         :endpoint => Framed::FRAMED_API_ENDPOINT,
         :logger => Logger.new(STDERR),
@@ -41,28 +41,28 @@ module Framed
       (configuration[:excluded_params] + DEFAULT_EXCLUDED_PARAMS).uniq
     end
 
-    def configure(silent = false)
+    def configure
       yield configuration
       self.client = Client.new(configuration)
 
-      @consumer.stop(true) if @consumer
-      @consumer = configuration[:consumer].new(self.client)
+      @emitter.stop(true) if @emitter
+      @emitter = configuration[:emitter].new(self.client)
     end
 
     def report(event)
-      event[:lib] =  "framed_ruby"
+      event[:lib] = 'framed_ruby'
       event[:lib_version] = Framed::VERSION
       event[:type] ||= :track
       event[:context] ||= {}
       event[:context].merge!({
-        :channel => 'server',
+        :channel => 'server'
       })
 
       event[:properties] ||= {}
 
       # fill in if needed, in case it sits in queue for a while.
       event[:timestamp] ||= Framed::Utils.serialize_date(Time.now)
-      @consumer.enqueue(event)
+      @emitter.enqueue(event)
     end
 
     def logger
@@ -78,7 +78,7 @@ module Framed
     end
 
     def drain
-      @consumer.stop(true) if @consumer
+      @emitter.stop(true) if @emitter
     end
 
     def user_id_controller_method
