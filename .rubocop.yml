@@ -1,0 +1,61 @@
+AllCops:
+  Exclude:
+    - 'lib/framed/okjson.rb'
+    - 'vendor/**/*'
+
+Documentation:
+  Enabled: False
+
+Lint/HandleExceptions:
+  Enabled: False
+
+Metrics/AbcSize:
+  Enabled: False
+
+Metrics/LineLength:
+  Enabled: False
+
+Metrics/MethodLength:
+  Enabled: False
+
+Style/BracesAroundHashParameters:
+  Enabled: False
+
+Style/EachWithObject:
+  Enabled: False
+
+Style/EmptyLinesAroundBlockBody:
+  Enabled: False
+
+Style/GuardClause:
+  Enabled: False
+
+Style/HashSyntax:
+  Enabled: False
+
+Style/IfUnlessModifier:
+  Enabled: False
+
+Style/IndentHash:
+  Enabled: False
+
+Style/ModuleFunction:
+  Enabled: False
+
+Style/RaiseArgs:
+  Enabled: False
+
+Style/RedundantBegin:
+  Enabled: False
+
+Style/RedundantSelf:
+  Enabled: False
+
+Style/SignalException:
+  Enabled: False
+
+Style/SpaceInsideHashLiteralBraces:
+  Enabled: False
+
+Style/WhileUntilModifier:
+  Enabled: False

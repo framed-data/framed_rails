@@ -41,7 +41,7 @@ module Framed
       (configuration[:excluded_params] + DEFAULT_EXCLUDED_PARAMS).uniq
     end
 
-    def configure(silent = false)
+    def configure
       yield configuration
       self.client = Client.new(configuration)
 
@@ -50,12 +50,12 @@ module Framed
     end
 
     def report(event)
-      event[:lib] =  "framed_ruby"
+      event[:lib] = 'framed_ruby'
       event[:lib_version] = Framed::VERSION
       event[:type] ||= :track
       event[:context] ||= {}
       event[:context].merge!({
-        :channel => 'server',
+        :channel => 'server'
       })
 
       event[:properties] ||= {}

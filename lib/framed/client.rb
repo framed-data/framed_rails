@@ -20,7 +20,8 @@ module Framed
 
       creds = Base64.strict_encode64(@config[:api_key] + ':')
       payload = JSON.generate(data)
-      response = Excon.post(@config[:endpoint],
+      response = Excon.post(
+        @config[:endpoint],
         :headers => {
           'Authorization' => "Basic #{creds}",
           'Content-Type' => 'application/json'
