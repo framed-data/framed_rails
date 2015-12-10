@@ -2,7 +2,8 @@
 ------------
 
 `framed_rails` is a gem to add Framed instrumentation to your Rails 4
-app. For each request that occurs in your app, it sends an event to Framed for analysis.
+app. For each request that occurs in your app, it constructs an event from the
+request attributes and its parameters, and sends it to Framed for analysis.
 
 To use this in your Rails project:
 
@@ -24,7 +25,7 @@ Configuration
 -------------
 
 <table>
-	<tr>
+  <tr>
     <th>Key</th>
     <th>Description</th>
     <th>Default</th>
@@ -44,13 +45,13 @@ Configuration
     <td><code>'framed_current_user_id'</code> (tries <code>current_user.id</code>)</td>
   </tr>
 
-	<tr>
+  <tr>
     <td><code>:logger</code></td>
     <td>A Logger for reporting errors.</td>
     <td><code>Rails.logger</code></td>
   </tr>
 
-	<tr>
+  <tr>
     <td><code>:anonymous_cookie</code></td>
     <td>The name of the signed cookie for anonymous user IDs.
     Long-lived anonymous user IDs are issued anonymous IDs by default.</td>
@@ -74,6 +75,11 @@ Configuration
 
 </table>
 
+Privacy
+--------
+`framed_rails` performs "best effort" filtering on sensitive data - parameters such as `authenticity_token` and
+`password` are never sent to Framed, for example. However, you will likely want to carefully consider your request
+payloads and configure `:excluded_params` with any values that you want to keep private.
 
 user_id_controller_method
 --------
