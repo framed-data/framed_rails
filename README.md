@@ -4,6 +4,8 @@
 `framed_rails` is a gem to add Framed instrumentation to your Rails 4
 app. For each request that occurs in your app, it constructs an event from the
 request attributes and its parameters, and sends it to Framed for analysis.
+The RESTful structure of your routes/resources provides an automatic
+structure to the event data analysis.
 
 To use this in your Rails project:
 
